@@ -54,9 +54,9 @@ const resetBtn = document.getElementById("resetBtn");
 const chips = [...document.querySelectorAll(".chip")];
 const playerWrap = document.getElementById("playerWrap");
 const playerTitle = document.getElementById("playerTitle");
-const ytPlayer = document.getElementById("ytPlayer");
+const playerFrame = document.querySelector(".player-frame");
 const closePlayerBtn = document.getElementById("closePlayerBtn");
-const categoryCards = [...document.querySelectorAll(".category-card")];
+const videoItems = [...document.querySelectorAll(".video-item")];
 const calendarBtn = document.getElementById("calendarBtn");
 const calendarPanel = document.getElementById("calendarPanel");
 const mainView = document.getElementById("mainView");
@@ -80,6 +80,7 @@ const state = {
   calendarYear: new Date().getFullYear(),
   calendarMonth: new Date().getMonth(),
   selectedDate: null,
+  selectedVideoId: null,
 };
 
 function pad(value) {
@@ -238,6 +239,7 @@ function openCompleteModal(minutes) {
 function finishSession(minutes) {
   clearTick();
   setRunningUi(false);
+  stopMeditationVideo();
   const savedMinutes = Math.max(1, minutes);
   playAlarm();
   openCompleteModal(savedMinutes);
@@ -260,17 +262,24 @@ function tick() {
 function startTimer() {
   clearTick();
   setRunningUi(true);
+  if (state.elapsedSeconds === 0) {
+    playMeditationVideo(true);
+  } else {
+    playMeditationVideo(false);
+  }
   state.intervalId = setInterval(tick, 1000);
 }
 
 function pauseTimer() {
   clearTick();
   setRunningUi(false);
+  pauseMeditationVideo();
 }
 
 function resetTimer() {
   clearTick();
   state.running = false;
+  stopMeditationVideo();
   setDuration(state.selectedMinutes);
   startBtn.textContent = "명상 시작";
   resetBtn.hidden = true;
@@ -299,27 +308,75 @@ function onResetClick() {
   resetTimer();
 }
 
-function playVideo(videoId, title, card) {
-  playerTitle.textContent = title;
+function buildEmbedUrl(videoId, autoplay) {
   const params = new URLSearchParams({
-    autoplay: "1",
+    enablejsapi: "1",
     rel: "0",
     modestbranding: "1",
     playsinline: "1",
-    enablejsapi: "1",
   });
+  if (autoplay) params.set("autoplay", "1");
   if (window.location.protocol === "http:" || window.location.protocol === "https:") {
     params.set("origin", window.location.origin);
+    params.set("widget_referrer", window.location.origin);
   }
-  ytPlayer.src = `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+  return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+}
+
+function commandPlayer(func, args = []) {
+  const iframe = document.getElementById("ytPlayer");
+  if (!iframe || !iframe.contentWindow) return;
+  iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func, args }), "*");
+}
+
+function playMeditationVideo(fromStart) {
+  if (!state.selectedVideoId) return;
+  if (fromStart) commandPlayer("seekTo", [0, true]);
+  commandPlayer("playVideo");
+}
+
+function pauseMeditationVideo() {
+  commandPlayer("pauseVideo");
+}
+
+function stopMeditationVideo() {
+  commandPlayer("pauseVideo");
+  commandPlayer("seekTo", [0, true]);
+}
+
+function mountPlayer(videoId, autoplay) {
+  playerFrame.replaceChildren();
+  const iframe = document.createElement("iframe");
+  iframe.id = "ytPlayer";
+  iframe.title = "명상 영상";
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+  iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+  iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  iframe.allowFullscreen = true;
+  playerFrame.appendChild(iframe);
+  iframe.src = buildEmbedUrl(videoId, autoplay);
+  iframe.addEventListener("load", () => {
+    if (iframe.contentWindow) {
+      iframe.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1 }), "*");
+    }
+    if (state.running) commandPlayer("playVideo");
+  });
+}
+
+function playVideo(videoId, title, card) {
+  playerTitle.textContent = title;
+  state.selectedVideoId = videoId;
   playerWrap.hidden = false;
-  categoryCards.forEach((item) => item.classList.toggle("is-active", item === card));
+  videoItems.forEach((item) => item.classList.toggle("is-active", item === card));
+  mountPlayer(videoId, state.running);
 }
 
 function closePlayer() {
-  ytPlayer.src = "";
+  stopMeditationVideo();
+  state.selectedVideoId = null;
+  playerFrame.replaceChildren();
   playerWrap.hidden = true;
-  categoryCards.forEach((item) => item.classList.remove("is-active"));
+  videoItems.forEach((item) => item.classList.remove("is-active"));
 }
 
 function renderDayDetail(dateKey) {
@@ -415,7 +472,7 @@ chips.forEach((chip) => {
 startBtn.addEventListener("click", onStartClick);
 resetBtn.addEventListener("click", onResetClick);
 
-categoryCards.forEach((card) => {
+videoItems.forEach((card) => {
   card.addEventListener("click", () => {
     playVideo(card.dataset.video, card.dataset.title, card);
   });

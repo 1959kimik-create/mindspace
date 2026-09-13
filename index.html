@@ -55,41 +55,73 @@
           <p class="player-title" id="playerTitle">명상 음악</p>
           <button type="button" id="closePlayerBtn" class="icon-btn" aria-label="플레이어 닫기">닫기</button>
         </div>
-        <div class="player-frame">
-          <iframe
-            id="ytPlayer"
-            title="명상 영상"
-            src=""
-            referrerpolicy="strict-origin-when-cross-origin"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        </div>
+        <div class="player-frame"></div>
       </section>
 
       <section class="categories">
         <h2 class="section-title">추천 명상 음악 카테고리</h2>
+        <p class="section-note">모든 영상은 나레이션이 없습니다. 리스트에서 고른 뒤 명상 시작을 누르면 선택한 시간만큼 재생됩니다.</p>
         <div class="category-grid">
-          <button type="button" class="category-card glass" data-video="TSsEbovNtFE" data-title="수면 명상">
-            <span class="category-icon" aria-hidden="true">🌙</span>
-            <span class="category-name">수면 명상</span>
-            <span class="category-desc">밤에 내리는 빗소리</span>
-          </button>
-          <button type="button" class="category-card glass" data-video="inpok4MKVLM" data-title="집중 명상">
-            <span class="category-icon" aria-hidden="true">🧘</span>
-            <span class="category-name">집중 명상</span>
-            <span class="category-desc">어디서나 할 수 있는 마인드풀니스</span>
-          </button>
-          <button type="button" class="category-card glass" data-video="nNrgnVk_lkQ" data-title="휴식">
-            <span class="category-icon" aria-hidden="true">🌿</span>
-            <span class="category-name">휴식</span>
-            <span class="category-desc">뇌파를 안정시키는 힐링 BGM</span>
-          </button>
-          <button type="button" class="category-card glass" data-video="j8I4sp1TSHQ" data-title="자연의 소리">
-            <span class="category-icon" aria-hidden="true">🌊</span>
-            <span class="category-name">자연의 소리</span>
-            <span class="category-desc">음악 없이, 실제 파도 소리만</span>
-          </button>
+          <article class="category-block glass">
+            <h3 class="category-name"><span class="category-icon" aria-hidden="true">🌙</span> 수면 명상</h3>
+            <p class="category-desc">밤에 내리는 빗소리</p>
+            <ul class="video-list">
+              <li>
+                <button type="button" class="video-item" data-video="TSsEbovNtFE" data-title="수면 · 함석 지붕 빗소리">함석 지붕에 내리는 밤비</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="MO1wJTMuHXg" data-title="수면 · 천둥 없는 빗소리">천둥 없는 빗소리</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="j2Fcjw-InxA" data-title="수면 · 검은 화면 빗소리">검은 화면 빗소리</button>
+              </li>
+            </ul>
+          </article>
+          <article class="category-block glass">
+            <h3 class="category-name"><span class="category-icon" aria-hidden="true">🧘</span> 집중 명상</h3>
+            <p class="category-desc">말 없이 집중을 돕는 소리</p>
+            <ul class="video-list">
+              <li>
+                <button type="button" class="video-item" data-video="esb9xiF3TIM" data-title="집중 · 깊은 브라운 노이즈">깊은 브라운 노이즈</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="nubeWjF1QPw" data-title="집중 · 생각 가라앉히는 노이즈">생각 가라앉히는 브라운 노이즈</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="uwtKoBGcKJg" data-title="집중 · 숲 시냇물">숲 시냇물과 새소리</button>
+              </li>
+            </ul>
+          </article>
+          <article class="category-block glass">
+            <h3 class="category-name"><span class="category-icon" aria-hidden="true">🌿</span> 휴식</h3>
+            <p class="category-desc">나레이션 없는 힐링 BGM</p>
+            <ul class="video-list">
+              <li>
+                <button type="button" class="video-item" data-video="nNrgnVk_lkQ" data-title="휴식 · 젠 명상 음악">젠 명상 음악</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="ss7EJ-PW2Uk" data-title="휴식 · 잔잔한 기타">잔잔한 기타</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="gbSeNYzYCiA" data-title="휴식 · 싱잉볼">티베트 싱잉볼</button>
+              </li>
+            </ul>
+          </article>
+          <article class="category-block glass">
+            <h3 class="category-name"><span class="category-icon" aria-hidden="true">🌊</span> 자연의 소리</h3>
+            <p class="category-desc">음악 없이, 실제 자연음만</p>
+            <ul class="video-list">
+              <li>
+                <button type="button" class="video-item" data-video="j8I4sp1TSHQ" data-title="자연 · 지중해 파도">지중해 파도 소리</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="JekUNGo-RVk" data-title="자연 · 바위에 부딪히는 파도">바위에 부딪히는 파도</button>
+              </li>
+              <li>
+                <button type="button" class="video-item" data-video="ND3kHCLxfnw" data-title="자연 · 가을 숲 새소리">가을 숲과 새소리</button>
+              </li>
+            </ul>
+          </article>
         </div>
       </section>
     </main>
